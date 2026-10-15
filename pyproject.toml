@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "analytics-dashboards"
+version = "0.1.0"
+description = "Open-tool analytics dashboards (retail, HR, marketing) with a documented pipeline and BI-tool build guides."
+requires-python = ">=3.10"
+license = { text = "CC-BY-NC-ND-4.0" }
+dependencies = [
+  "pandas>=2.2,<3",
+  "numpy>=1.26",
+  "duckdb>=1.0",
+  "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+e2e = ["playwright>=1.45"]
+
+[project.scripts]
+analytics-dashboards = "analytics_dashboards.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+analytics_dashboards = ["sql/*.sql"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "data: needs the raw datasets (run `make data` first)",
+  "e2e: browser checks with Playwright (run `make e2e`)",
+]
+addopts = "-m 'not data and not e2e'"
