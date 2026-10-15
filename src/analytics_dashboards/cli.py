@@ -72,7 +72,8 @@ def run_pipeline(skip_export: bool = False) -> int:
     log += [f"Failed checks: {len(failed)}", ""]
     runs = DOCS / "runs"
     runs.mkdir(parents=True, exist_ok=True)
-    (runs / f"{date.today().isoformat()}-pipeline.md").write_text("\n".join(log), "utf-8")
+    log_path = runs / f"{date.today().isoformat()}-pipeline.md"
+    log_path.write_text("\n".join(log), "utf-8", newline="\n")
     print("\n".join(log))
     return 1 if failed else 0
 

@@ -99,7 +99,7 @@ These are descriptive figures about these datasets, not claims about other busin
 | Marketing conversion rate | 11.27% (4,639 of 41,176 clients); 65.1% where an earlier campaign succeeded (n = 1,373) versus 8.8% for clients not contacted before (n = 35,551) | Verified | pandas and browser | 2026-10-15 |
 | Marketing contacts per conversion | 22.79 (105,735 attempts / 4,639 conversions) | Verified | pandas and browser | 2026-10-15 |
 | Data-quality checks | 33 of 33 pass (retail 12, HR 8, marketing 13) | Verified | `quality.py`, run log | 2026-10-15 |
-| Tests | 30 fast tests, 5 real-data tests, 27 browser tests | Verified | pytest, [verification log](docs/runs/2026-10-15-verification.md) | 2026-10-15 |
+| Tests | 30 fast tests, 5 real-data tests, 21 browser checks (plus 6 screenshot captures) | Verified | pytest, [verification log](docs/runs/2026-10-15-verification.md) | 2026-10-15 |
 
 A data-quality finding worth knowing: in the marketing file, 4,110 clients with earlier contacts also have `pdays = 999`
 (the value documented as "not previously contacted"). The dashboards therefore flag prior contact with `previous > 0`
@@ -112,8 +112,8 @@ JavaScript and SVG for the dashboards (no third-party JavaScript or fonts), GitH
 
 ## Getting started
 
-Prerequisites: Python 3.10 or newer, about 1.5 GB of free disk space for the raw data, a few minutes (reading the
-retail workbook is the slow step, about 3 to 5 minutes on a desktop CPU). `make` targets in the `Makefile` are shortcuts for
+Prerequisites: Python 3.10 or newer, about 250 MB of free disk space (109 MB of downloaded data and 78 MB of exports), and a few minutes
+(download about 15 seconds; `build` took 3 minutes 18 seconds on an 8-core desktop CPU, mostly reading the retail workbook). `make` targets in the `Makefile` are shortcuts for
 the commands below.
 
 ```bash

@@ -212,5 +212,5 @@ def write_reference_markdown(path: Path, values: dict[str, list[tuple[str, str]]
         lines += [f"## {title}", "", "| Measure | Value |", "|---|---|"]
         lines += [f"| {name} | {value} |" for name, value in rows]
         lines.append("")
-    path.write_text(chr(10).join(lines), "utf-8")
+    path.write_text(chr(10).join(lines), "utf-8", newline=chr(10))
     return path
