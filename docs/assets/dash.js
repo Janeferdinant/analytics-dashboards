@@ -353,7 +353,7 @@
       const rows = spec.rowLabels.length, cols = spec.colLabels.length;
       const lw = spec.rowLabelW || 78, top = 34;
       const cw = (w - lw - 2) / cols, ch = spec.cellH || 22;
-      const h = top + rows * ch + 4;
+      const h = top + rows * ch + 26;
       const [lo, hi] = spec.domain;
       const svg = svgRoot(w, h, spec.ariaLabel, { tabindex: 0, 'aria-describedby': 'kbd-help' });
       if (spec.colHead) svg.append(sv('text', { class: 'note-text', x: lw, y: 10 }, spec.colHead));
@@ -368,15 +368,20 @@
         spec.cells[r].forEach((cell, c) => {
           if (cell === null || cell === undefined) { cellEls[r][c] = null; return; }
           const t = cell.v === null ? null : Math.max(0, Math.min(1, (cell.v - lo) / (hi - lo || 1)));
+          const bin = t === null ? -1 : Math.min(4, Math.floor(t * 5));
           const rect = sv('rect', { class: 'cell', x: lw + c * cw, y: top + r * ch, width: Math.max(1, cw), height: ch,
-            style: t === null ? 'fill: var(--grid)' : `fill: color-mix(in srgb, var(--r-hi) ${(t * 100).toFixed(0)}%, var(--r-lo))` });
+            style: 'fill: var(' + (bin < 0 ? '--grid' : '--b' + bin) + ')' });
           svg.append(rect);
-          if (t !== null && cw >= 26) {
-            svg.append(sv('text', { x: lw + c * cw + cw / 2, y: top + r * ch + ch / 2 + 4, 'text-anchor': 'middle', 'font-size': 10.5, style: 'font-family: var(--font); pointer-events:none; fill: var(' + (t > 0.5 ? '--txt-hi' : '--txt-lo') + ')' }, cell.text));
+          if (bin >= 0 && cw >= 26) {
+            svg.append(sv('text', { x: lw + c * cw + cw / 2, y: top + r * ch + ch / 2 + 4, 'text-anchor': 'middle', 'font-size': 10.5, style: 'font-family: var(--font); pointer-events:none; fill: var(--bt' + bin + ')' }, cell.text));
           }
           cellEls[r][c] = rect;
         });
       });
+      const ly = top + rows * ch + 10, lf = spec.legendFmt || ((v) => Math.round(v * 100) + '%');
+      svg.append(sv('text', { class: 'note-text', x: lw, y: ly + 9 }, lf(lo)));
+      for (let b = 0; b < 5; b++) svg.append(sv('rect', { x: lw + 30 + b * 18, y: ly, width: 16, height: 11, rx: 2, style: 'fill: var(--b' + b + ')' }));
+      svg.append(sv('text', { class: 'note-text', x: lw + 30 + 5 * 18 + 4, y: ly + 9 }, lf(hi) + ' or more'));
       const ring = sv('rect', { fill: 'none', stroke: 'var(--ink)', 'stroke-width': 2, display: 'none', 'pointer-events': 'none' });
       svg.append(ring);
       function rowsFor(r, c, cell) {

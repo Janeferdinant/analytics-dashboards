@@ -43,9 +43,10 @@ def run_pipeline(skip_export: bool = False) -> int:
     ]
     if not skip_export:
         export.export_retail(con)
-        export.export_frame(hr_df, "hr_tidy.csv")
-        export.export_frame(mk_df, "marketing_tidy.csv")
+        export.export_frame(export.hr_for_bi(hr_df), "hr_tidy.csv")
+        export.export_frame(export.marketing_for_bi(mk_df), "marketing_tidy.csv")
         export.write_dictionary()
+        export.write_reference_markdown(DOCS / "bi-reference-values.md", export.reference_values())
 
     sizes = ", ".join(f"{p.name} ({p.stat().st_size / 1e6:.2f} MB)" for p in paths)
     log = [

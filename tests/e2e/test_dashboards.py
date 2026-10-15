@@ -65,8 +65,8 @@ class Opened:
         self.page.on("pageerror", lambda e: self.errors.append(str(e)))
         self.page.on("requestfailed", lambda r: self.errors.append("request failed " + r.url))
         self.page.goto(url)
-        self.page.wait_for_selector(".tile .value")
-        self.page.wait_for_selector(".card svg")
+        self.page.wait_for_selector(".tile .value, .cards")
+        self.page.wait_for_selector(".card svg, .cards")
 
     def tile(self, label: str) -> str:
         return self.page.inner_text(f'.tile[aria-label="{label}"] .value')
@@ -99,9 +99,8 @@ def test_page_is_clean_and_responsive(open_page, name, width):
         "document.documentElement.scrollWidth - document.documentElement.clientWidth"
     )
     assert overflow <= 0
-    widest = o.page.evaluate(
-        "Math.max(...[...document.querySelectorAll('svg')].map(s => s.getBoundingClientRect().right))"
-    )
+    selector = "[...document.querySelectorAll('svg')]"
+    widest = o.page.evaluate(f"Math.max(...{selector}.map(s => s.getBoundingClientRect().right))")
     assert widest <= width
     assert o.page.locator("h1").count() == 1
     assert o.page.locator("svg").count() >= 3
@@ -243,6 +242,20 @@ def test_dark_theme_has_no_errors_and_changes_colours(open_page):
     after = o.page.evaluate("getComputedStyle(document.body).backgroundColor")
     assert before != after
     assert o.errors == []
+
+
+@pytest.mark.parametrize("width", WIDTHS)
+def test_overview_page_links_and_images(open_page, width):
+    o = open_page("index", width)
+    o.page.wait_for_timeout(300)
+    assert o.errors == []
+    assert o.page.locator(".cards a.card").count() == 3
+    broken = o.page.evaluate("[...document.images].filter(i => !i.naturalWidth).length")
+    assert broken == 0
+    overflow = o.page.evaluate("document.documentElement.scrollWidth - innerWidth")
+    assert overflow <= 0
+    text = o.page.inner_text("main")
+    assert "not included" in text
 
 
 @pytest.mark.skipif(not os.environ.get("SAVE_SCREENSHOTS"), reason="set SAVE_SCREENSHOTS=1")

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics dashboards</title>
+<meta name="description" content="Three interactive analytics dashboards (retail, HR, marketing) built with open tools from public datasets.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/dash.css">
+<style>
+  .cards { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); margin: 16px 0; }
+  .cards a.card { text-decoration: none; color: inherit; display: block; }
+  .cards a.card:hover { border-color: var(--ink-2); }
+  .cards img { width: 100%; height: 190px; object-fit: cover; object-position: top; border: 1px solid var(--border); border-radius: 8px; display: block; margin-bottom: 10px; }
+  .cards dl { margin: 8px 0 0; font-size: 0.8125rem; color: var(--ink-2); }
+  .cards dt { font-weight: 600; color: var(--ink); display: inline; }
+  .cards dd { display: inline; margin: 0 0 0 4px; }
+  .cards .row { margin: 2px 0; }
+  .note { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+  @media (min-width: 900px) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Analytics dashboards</h1>
+      <p>Three interactive dashboards built with plain HTML, JavaScript and SVG from public datasets. Each one has KPI tiles, filters, drill-downs, a trend or cohort view, and a data table behind every chart.</p>
+    </div>
+    <nav class="nav" aria-label="Dashboards">
+      <a href="index.html" aria-current="page">Overview</a><a href="retail.html">Retail sales</a><a href="hr.html">HR attrition</a><a href="marketing.html">Marketing</a>
+    </nav>
+  </header>
+  <main id="main">
+    <div class="cards">
+      <a class="card" href="retail.html">
+        <img src="screenshots/retail-1280.png" alt="Screenshot of the retail sales dashboard" loading="lazy">
+        <h2>Retail sales</h2>
+        <dl>
+          <div class="row"><dt>Dataset:</dt><dd>Online Retail II (UCI), 2009-2011, CC BY 4.0</dd></div>
+          <div class="row"><dt>KPIs:</dt><dd>net revenue, returns, orders, average order value, customers, repeat-customer rate, cohort retention</dd></div>
+        </dl>
+      </a>
+      <a class="card" href="hr.html">
+        <img src="screenshots/hr-1280.png" alt="Screenshot of the HR attrition dashboard" loading="lazy">
+        <h2>HR attrition</h2>
+        <dl>
+          <div class="row"><dt>Dataset:</dt><dd>Saudi Employee Attrition survey (Mendeley Data), CC BY 4.0</dd></div>
+          <div class="row"><dt>KPIs:</dt><dd>attrition rate, respondents, leavers, gap versus all respondents</dd></div>
+        </dl>
+      </a>
+      <a class="card" href="marketing.html">
+        <img src="screenshots/marketing-1280.png" alt="Screenshot of the marketing campaign dashboard" loading="lazy">
+        <h2>Marketing campaigns</h2>
+        <dl>
+          <div class="row"><dt>Dataset:</dt><dd>Bank Marketing (UCI), 2008-2010, CC BY 4.0</dd></div>
+          <div class="row"><dt>KPIs:</dt><dd>conversion rate, clients contacted, contact attempts, contacts per conversion</dd></div>
+        </dl>
+      </a>
+    </div>
+    <p class="note">These dashboards are open-tool implementations. Power BI and Tableau versions are not included in this repository; the step-by-step build guide and cleaned CSV exports for making them are in <code>docs/build-in-bi-tools.md</code>. Metric definitions are in <code>docs/metrics-dictionary.md</code>. Original work is licensed CC BY-NC-ND 4.0; the datasets keep their own CC BY 4.0 licenses (see <code>THIRD_PARTY_NOTICES.md</code>).</p>
+  </main>
+</div>
+</body>
+</html>

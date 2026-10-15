@@ -43,3 +43,14 @@ def test_marketing_dataset_checks():
     df = marketing.clean(marketing.load_raw())
     assert [c.name for c in quality.marketing_checks(df) if not c.passed] == []
     assert marketing.conversion_rate(df) == pytest.approx(0.11266, abs=1e-4)
+
+
+def test_bi_exports_have_complete_sort_keys():
+    from analytics_dashboards import export
+
+    hr_out = export.hr_for_bi(hr.clean(hr.load_raw()))
+    order_cols = [c for c in hr_out.columns if c.endswith("_order")]
+    assert len(order_cols) == 8
+    assert hr_out[order_cols].notna().all().all()
+    mk_out = export.marketing_for_bi(marketing.clean(marketing.load_raw()))
+    assert mk_out[["age_band_order", "prior_outcome_order"]].notna().all().all()
