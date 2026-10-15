@@ -51,7 +51,7 @@ def build_retail(lines: pd.DataFrame, con, out: Path = DASH_DATA) -> Path:
 
     inv = con.execute(
         """
-        SELECT i.year_month, k.country, c.customer_id, c.cohort_month, i.is_return, i.amount
+        SELECT i.year_month, k.country, c.customer_id, i.is_return, i.amount
         FROM fact_invoice i
         JOIN dim_country k USING (country_key)
         LEFT JOIN dim_customer c USING (customer_key)
@@ -65,7 +65,6 @@ def build_retail(lines: pd.DataFrame, con, out: Path = DASH_DATA) -> Path:
         "m": [month_idx[m] for m in inv["year_month"]],
         "c": [country_idx.get(c, len(top)) for c in inv["country"]],
         "cu": [cust_idx[int(c)] if pd.notna(c) else -1 for c in inv["customer_id"]],
-        "co": [month_idx[m] if isinstance(m, str) else -1 for m in inv["cohort_month"]],
         "k": [int(r) for r in inv["is_return"]],
         "v": [round(float(v), 2) for v in inv["amount"]],
     }
@@ -157,7 +156,10 @@ def build_hr(df: pd.DataFrame, out: Path = DASH_DATA) -> Path:
 
 
 def build_marketing(df: pd.DataFrame, out: Path = DASH_DATA) -> Path:
-    months = sorted(df["year_month"].unique())
+    # every calendar month from first to last, so months with no records show as gaps
+    months = [
+        str(p) for p in pd.period_range(df["year_month"].min(), df["year_month"].max(), freq="M")
+    ]
     dims = {
         "job": _dim(df["job"]),
         "age": _dim(df["age_band"], mk_mod.AGE_LABELS),
