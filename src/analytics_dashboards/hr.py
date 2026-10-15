@@ -108,7 +108,11 @@ def clean(raw: pd.DataFrame) -> pd.DataFrame:
         }
     )
     df["business_travel"] = df["business_travel"].replace(
-        {"I do not travel for work": "None", "Travel rarely": "Rarely", "Travel frequently": "Often"}
+        {
+            "I do not travel for work": "None",
+            "Travel rarely": "Rarely",
+            "Travel frequently": "Often",
+        }
     )
     df["payment_overtime"] = df["Payment_Overtime"].replace(
         {"I don't have overtime": "No overtime", "Yes": "Paid", "No": "Unpaid"}

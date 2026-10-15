@@ -93,13 +93,17 @@ def hr_checks(df: pd.DataFrame) -> list[CheckResult]:
     out = [
         _check("respondent_id is unique", df["respondent_id"].is_unique),
         _check("attrition is Yes/No", set(df["attrition"]) == {"Yes", "No"}),
-        _check("left flag matches attrition", bool((df["left"] == (df["attrition"] == "Yes")).all())),
+        _check(
+            "left flag matches attrition", bool((df["left"] == (df["attrition"] == "Yes")).all())
+        ),
         _check("no missing values", int(df.isna().sum().sum()) == 0),
         _check("age bands are known", set(df["age_band"].astype(str)) <= set(hr_mod.AGE_ORDER)),
         _check("salary bands are mapped", df["salary_band"].notna().all()),
         _check("tenure bands are mapped", df["tenure"].notna().all()),
-        _check("sector groups are at least the minimum size or 'Other sectors'",
-               bool((df.groupby("sector_group").size() >= hr_mod.MIN_GROUP).all())),
+        _check(
+            "sector groups are at least the minimum size or 'Other sectors'",
+            bool((df.groupby("sector_group").size() >= hr_mod.MIN_GROUP).all()),
+        ),
     ]
     return out
 
@@ -114,8 +118,23 @@ def marketing_checks(df: pd.DataFrame) -> list[CheckResult]:
         _check("inferred timeline ends Nov 2010", months[-1] == "2010-11", months[-1]),
         _check("inferred months are in chronological order", months == sorted(months)),
         _check(
-            "pdays=999 only when there was no earlier contact",
-            bool((df.loc[df["pdays"] == 999, "previous"] == 0).all()),
+            "no earlier contact (previous=0) implies pdays=999 and no prior outcome",
+            bool(
+                (
+                    (df["previous"] > 0)
+                    | ((df["pdays"] == 999) & (df["poutcome"] == "nonexistent"))
+                ).all()
+            ),
+        ),
+        _check(
+            "prior outcome 'nonexistent' implies previous=0 (the reverse is how we flag clients)",
+            bool(((df["poutcome"] != "nonexistent") | (df["previous"] == 0)).all()),
+        ),
+        _check(
+            "documented anomaly: pdays=999 also occurs with earlier contacts (info, not a failure)",
+            True,
+            f"{int(((df['pdays'] == 999) & (df['previous'] > 0)).sum()):,} clients; "
+            "the dashboards use previous>0, never pdays, to flag prior contact",
         ),
         _check("no clients over 100 years old", bool((df["age"] < 100).all())),
         _check("age bands cover every client", df["age_band"].notna().all()),

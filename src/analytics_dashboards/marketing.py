@@ -46,7 +46,8 @@ def clean(raw: pd.DataFrame) -> pd.DataFrame:
     df["year_month"] = df["year"].astype(str) + "-" + df["month_no"].astype(str).str.zfill(2)
     df["age_band"] = pd.cut(df["age"], AGE_BINS, labels=AGE_LABELS)
     df["prior_outcome"] = df["poutcome"].map(POUTCOME)
-    df["previously_contacted"] = (df["pdays"] != 999).astype(int)
+    # pdays == 999 is ambiguous (it also appears with earlier contacts), so use `previous`.
+    df["previously_contacted"] = (df["previous"] > 0).astype(int)
     df["attempts"] = df["campaign"].clip(upper=MAX_ATTEMPTS)
     df["job"] = df["job"].str.replace(".", "", regex=False)
     df["education"] = df["education"].str.replace(".", " ", regex=False)

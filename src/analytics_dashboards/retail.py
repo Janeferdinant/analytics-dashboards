@@ -126,10 +126,10 @@ def kpi_queries() -> dict[str, str]:
     for line in _read_sql("retail_kpis.sql").splitlines():
         if line.startswith("-- name:"):
             if name:
-                queries[name] = "\n".join(buf).strip()
+                queries[name] = "\n".join(buf).strip().rstrip(";")
             name, buf = line.split(":", 1)[1].strip(), []
         elif name:
             buf.append(line)
     if name:
-        queries[name] = "\n".join(buf).strip()
+        queries[name] = "\n".join(buf).strip().rstrip(";")
     return queries

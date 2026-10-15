@@ -84,7 +84,9 @@ def fetch(key: str, dest: Path = RAW) -> Path:
     folder.mkdir(parents=True, exist_ok=True)
     target = folder / src.filename
     if not (target.exists() and sha256_of(target) == src.sha256):
-        request = urllib.request.Request(src.url, headers={"User-Agent": "analytics-dashboards/0.1"})
+        request = urllib.request.Request(
+            src.url, headers={"User-Agent": "analytics-dashboards/0.1"}
+        )
         tmp = target.with_suffix(target.suffix + ".part")
         with urllib.request.urlopen(request, timeout=300) as response, tmp.open("wb") as out:
             while block := response.read(1 << 20):
