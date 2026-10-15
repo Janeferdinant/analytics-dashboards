@@ -100,3 +100,36 @@ def clean(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     df.insert(0, "line_id", range(1, len(df) + 1))
     report.rows_out = len(df)
     return df, report
+
+
+def _read_sql(name: str) -> str:
+    from .paths import SQL_DIR
+
+    return (SQL_DIR / name).read_text(encoding="utf-8")
+
+
+def build_star(lines: pd.DataFrame):
+    """Build the star schema in an in-memory DuckDB database and return the connection."""
+    import duckdb
+
+    con = duckdb.connect(":memory:")
+    con.register("clean_lines", lines)
+    con.execute(_read_sql("retail_star.sql"))
+    return con
+
+
+def kpi_queries() -> dict[str, str]:
+    """Parse retail_kpis.sql into {name: sql}; each block starts with '-- name: <id>'."""
+    queries: dict[str, str] = {}
+    name = None
+    buf: list[str] = []
+    for line in _read_sql("retail_kpis.sql").splitlines():
+        if line.startswith("-- name:"):
+            if name:
+                queries[name] = "\n".join(buf).strip()
+            name, buf = line.split(":", 1)[1].strip(), []
+        elif name:
+            buf.append(line)
+    if name:
+        queries[name] = "\n".join(buf).strip()
+    return queries
