@@ -29,7 +29,7 @@ Phone-width (390 px) screenshots are in `docs/screenshots/`. KPI definitions are
 
 ## Demo
 
-There is no hosted demo (the repository is private and no site is enabled). To view the dashboards locally:
+The dashboards are live at https://janeferdinant.github.io/analytics-dashboards/ (GitHub Pages). To view them locally:
 
 ```bash
 python -m http.server 8000 --directory docs
@@ -183,7 +183,7 @@ docs/screenshots/           390 px and 1280 px screenshots
   are drawn hollow. There is no cost data, so no cost per acquisition. The call-duration column is excluded because it is only known after the call.
 - Browser checks used Chromium only. The dashboards were checked with keyboard-driven tests and colour-contrast calculations,
   not with a screen reader or an automated accessibility auditor.
-- No hosted demo, and no Tableau or Power BI files exist in this repository.
+- No Tableau or Power BI files exist in this repository.
 
 ## Future scope
 
