@@ -27,6 +27,27 @@ Phone-width (390 px) screenshots are in `docs/screenshots/`. KPI definitions are
 [docs/metrics-dictionary.md](docs/metrics-dictionary.md); the retail star schema is in
 [docs/data-model.md](docs/data-model.md).
 
+## Interactive Streamlit & Dash applications
+
+Beside the static HTML/SVG dashboards, the repository provides interactive Python dashboard applications built with **Streamlit** and **Plotly Dash**, consuming the tested pipeline JSON exports (`docs/data/*.json`):
+
+### Streamlit application
+
+```bash
+streamlit run apps/streamlit_app.py
+```
+- Multi-page dashboard covering **Retail Sales**, **HR Attrition**, and **Marketing Campaigns**.
+- Country selectors, month range slider, sector and salary filters, and job category breakdowns.
+- Real-time KPI metric tiles, Plotly charts, and top-selling product data tables.
+
+### Plotly Dash application
+
+```bash
+python apps/dash_app.py
+```
+- Interactive tabbed interface (`dcc.Tabs`) for Retail, HR, and Marketing domains.
+- Reactive Dash callbacks dynamically recomputing revenue, order volume, attrition rate, and conversion efficiency.
+
 ## Demo
 
 The dashboards are live at https://janeferdinant.github.io/analytics-dashboards/ (GitHub Pages). To view them locally:
